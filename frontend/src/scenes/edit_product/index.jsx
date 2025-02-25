@@ -1,60 +1,62 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
+import { useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
+
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchProductById, updateProduct } from "../../services/api"; // Import API functions
 import Header from "../../components/Header";
 import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-import { addProduct } from "../../services/api";
 
-const Form = () => {
+const EditProduct = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  // const handleFormSubmit = async (values, { resetForm }) => {
-  //   try {
-  //     console.log("Submitting form data:", values); // ✅ Debugging log
+  const { id } = useParams(); // Get product ID from URL
+  const navigate = useNavigate();
+  const [productData, setProductData] = useState(null);
 
-  //     const response = await fetch("http://localhost:5000/api/products", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(values), // ✅ Convert values to JSON
-  //     });
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetchProductById(id);
+        console.log(response);
+        // Ensure productData is properly structured and avoid undefined values
+        setProductData({
+          ...response,
+          discount_type: response?.discount_type || "", // Default to empty string if undefined
+          tax_type: response?.tax_type || "",
+        });
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+      }
+    };
 
-  //     const data = await response.json();
-  //     console.log("Server response:", data); // ✅ Debugging log
+    fetchProduct();
+  }, [id]);
 
-  //     if (response.ok) {
-  //       alert("Product added successfully!");
-  //       resetForm(); // ✅ Clear form after submission
-  //     } else {
-  //       alert("Error: " + data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("Something went wrong!");
-  //   }
-  // };
+  if (!productData) return <p>Loading...</p>;
 
-  const handleFormSubmit = async (values, { resetForm }) => {
+  const handleFormSubmit = async (values) => {
     try {
-      await addProduct(values); // Call API to add product
-      alert("Product added successfully!");
-      resetForm(); // Reset form after submission
+      await updateProduct(id, values); // Update product API call
+      alert("Product updated successfully!");
+      navigate("/"); // Redirect to home page
     } catch (error) {
-      console.log(error);
-      alert("Failed to add product. Please try again.");
+      alert("Failed to update product. Please try again.");
+      console.error(error);
     }
   };
 
   return (
     <Box m="20px">
-      <Header title="Add Product" subtitle="Add Product in Inventory" />
+      <Header title="Edit Product" subtitle="Update Product in Inventory" />
 
       <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
+        enableReinitialize
+        initialValues={productData || initialValues}
         validationSchema={checkoutSchema}
+        onSubmit={handleFormSubmit}
       >
         {({
           values,
@@ -106,7 +108,7 @@ const Form = () => {
                 label="SKU"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.SKU}
+                value={values.sku}
                 name="sku"
                 error={!!touched.SKU && !!errors.SKU}
                 helperText={touched.SKU && errors.SKU}
@@ -119,7 +121,7 @@ const Form = () => {
                 label="HSN"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.HSN}
+                value={values.hsn}
                 name="hsn"
                 error={!!touched.HSN && !!errors.HSN}
                 helperText={touched.HSN && errors.HSN}
@@ -233,20 +235,6 @@ const Form = () => {
                 sx={{ gridColumn: "span 1" }}
               />
 
-              {/* <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Tax Type"
-                placeholder="Inclusive or Exclusive"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.tax_type}
-                name="tax_type"
-                error={!!touched.tax_type && !!errors.tax_type}
-                helperText={touched.tax_type && errors.tax_type}
-                sx={{ gridColumn: "span 1" }}
-              /> */}
               <FormControl
                 fullWidth
                 variant="filled"
@@ -254,7 +242,7 @@ const Form = () => {
               >
                 <InputLabel>Tax Type</InputLabel>
                 <Select
-                  value={values.tax_type}
+                  value={values.tax_type || ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="tax_type"
@@ -327,12 +315,13 @@ const Form = () => {
               >
                 <InputLabel>Discount Type</InputLabel>
                 <Select
-                  value={values.discount_type}
+                  value={values.discount_type || ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="discount_type"
                   error={!!touched.discount_type && !!errors.discount_type}
                 >
+                  <MenuItem value="">Select Discount Type</MenuItem>
                   <MenuItem value="Percentage">Percentage</MenuItem>
                   <MenuItem value="Fixed">Fixed</MenuItem>
                 </Select>
@@ -351,9 +340,10 @@ const Form = () => {
                 sx={{ gridColumn: "span 1" }}
               />
             </Box>
+
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Add Item
+                Update Product
               </Button>
             </Box>
           </form>
@@ -383,6 +373,7 @@ const checkoutSchema = yup.object().shape({
   discount_type: yup.string(),
   discount: yup.number(),
 });
+
 const initialValues = {
   item_name: "",
   category_name: "",
@@ -404,7 +395,7 @@ const initialValues = {
   discount: 0,
 };
 
-export default Form;
+export default EditProduct;
 
 // const phoneRegExp =
 //   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;

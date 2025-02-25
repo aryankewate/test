@@ -26,7 +26,7 @@ exports.getLowStockProducts = async (req, res) => {
     }
 
     // Return the low-stock products
-    res.status(200).json({ lowStockProducts });
+    res.status(200).json(lowStockProducts);
   } catch (error) {
     console.error("Database Error:", error); // Log for debugging
     res.status(500).json({ error: "Server error: " + error.message });

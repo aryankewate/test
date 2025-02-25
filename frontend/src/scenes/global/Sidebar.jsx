@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import AddIcon from "@mui/icons-material/Add";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
+// import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import InventoryIcon from "@mui/icons-material/Inventory";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
@@ -131,17 +132,31 @@ const Sidebar = () => {
             >
               Data
             </Typography>
-            <Item
+            {/* <Item
               title="Manage Team"
               to="/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+            /> */}
+            <Item
+              title="Low Stock"
+              to="/low-stock"
+              icon={<TrendingDownIcon />}
+              selected={selected}
+              setSelected={setSelected}
             />
             <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
+              title="Product List"
+              to="/products"
+              icon={<InventoryIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Add Item"
+              to="/form"
+              icon={<AddIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -160,13 +175,6 @@ const Sidebar = () => {
             >
               Pages
             </Typography>
-            <Item
-              title="Add Item"
-              to="/form"
-              icon={<AddIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
             <Item
               title="FAQ Page"
               to="/faq"
