@@ -16,6 +16,7 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -121,6 +122,14 @@ const Sidebar = () => {
               title="Dashboard"
               to="/"
               icon={<DashboardIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="POS"
+              to="/pos"
+              icon={<PointOfSaleIcon />}
               selected={selected}
               setSelected={setSelected}
             />

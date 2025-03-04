@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
+import POS from "./scenes/pos/POS";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Products from "./scenes/product_list";
@@ -31,6 +32,7 @@ function App() {
             <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/pos" element={<POS />} />
               <Route path="/team" element={<Team />} />
               <Route path="/products" element={<Products />} />
               <Route path="/low-stock" element={<LowStock />} />
